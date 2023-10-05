@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <string.h>
+
+struct guardian
+{
+    char nombre[50];
+    char tipo[50];
+    int pv;
+    int pa;
+    int pd;
+};
+
+int main()
+{
+    FILE *txtguardian;
+    txtguardian = fopen("txtguardian.txt", "r");
+    if (txtguardian == NULL)
+    {
+        printf("Error al abrir el archivo ''guardian.txt''\n");
+        system("pause");
+        return 1;
+    }
+    
+    
+
+    struct guardian guardianes[60];
+    int records = 0;
+    
+    
+    while (fscanf(txtguardian, "%50[^,],%50[^,],%d,%d,%d\n",
+                  guardianes[records].nombre,
+                  guardianes[records].tipo,
+                  &guardianes[records].pv,
+                  &guardianes[records].pa,
+                  &guardianes[records].pd) == 5)
+                  
+    {
+        records++;
+        
+    }
+    
+
+    fclose(txtguardian);
+
+    
+
+    int i;
+    //imprime las cartas del archivo
+    for (i = 0; i < records; i++)
+    {
+        printf("nombre: %s ", guardianes[i].nombre);
+        printf("tipo: %s ", guardianes[i].tipo);
+        printf("PV: %d ", guardianes[i].pv);
+        printf("PA: %d ", guardianes[i].pa);
+        printf("PD: %d\n", guardianes[i].pd);
+
+    }
+    system("pause");
+    return 0;
+}
