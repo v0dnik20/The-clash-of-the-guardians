@@ -3,15 +3,24 @@
 
 struct guardian
 {
-    char nombre[50];
+    char nombreguardian[50];
     char tipo[50];
     int pv;
     int pa;
     int pd;
 };
 
+struct player
+{
+    char nombreplayer[50];
+    int puntosdevida;
+};
+
+
+
 int main()
 {
+    //guardianes
     FILE *txtguardian;
     txtguardian = fopen("txtguardian.txt", "r");
     if (txtguardian == NULL)
@@ -20,41 +29,59 @@ int main()
         system("pause");
         return 1;
     }
-    
-    
-
     struct guardian guardianes[60];
     int records = 0;
-    
-    
     while (fscanf(txtguardian, "%50[^,],%50[^,],%d,%d,%d\n",
-                  guardianes[records].nombre,
+                  guardianes[records].nombreguardian,
                   guardianes[records].tipo,
                   &guardianes[records].pv,
                   &guardianes[records].pa,
-                  &guardianes[records].pd) == 5)
-                  
+                  &guardianes[records].pd) == 5)      
     {
         records++;
-        
     }
-    
-
     fclose(txtguardian);
-
-    
-
     int i;
     //imprime las cartas del archivo
-    for (i = 0; i < records; i++)
+    /*for (i = 0; i < records; i++)
     {
-        printf("nombre: %s ", guardianes[i].nombre);
+        printf("nombre: %s ", guardianes[i].nombreguardian);
         printf("tipo: %s ", guardianes[i].tipo);
         printf("PV: %d ", guardianes[i].pv);
         printf("PA: %d ", guardianes[i].pa);
         printf("PD: %d\n", guardianes[i].pd);
 
+    }*/ 
+    
+    //jugadores (player y cpu)
+    FILE*txtplayers;
+    txtplayers = fopen("txtplayers.txt", "r");
+    if (txtplayers == NULL)
+    {
+        printf("Error al abrir el archivo ''players.txt''\n");
+        system("pause");
+        return 1;
     }
+    struct player players[2];
+    int cplayers = 1;
+    while (fscanf(txtplayers, "%50[^,],%d\n",
+                  players[cplayers].nombreplayer,
+                  &players[cplayers].puntosdevida) == 2)      
+    {
+        cplayers++;
+    }
+    fclose(txtplayers);
+    int iplayers;
+    //imprime los players del archivo
+    /*printf("PLAYERS:\n");
+    for (iplayers = 1; iplayers < cplayers; iplayers++)
+    {
+        printf("Nombre player%d: %s \n",iplayers, players[iplayers].nombreplayer);
+        printf("Vida player%d: %d\n\n",iplayers, players[iplayers].puntosdevida);
+    }*/
+    
+    
+    
     system("pause");
     return 0;
 }
