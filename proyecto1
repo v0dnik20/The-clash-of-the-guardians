@@ -16,8 +16,6 @@ struct player
     int puntosdevida;
 };
 
-
-
 int main()
 {
     //guardianes
@@ -63,25 +61,62 @@ int main()
         return 1;
     }
     struct player players[2];
-    int cplayers = 1;
+    int cplayers = 0;
     while (fscanf(txtplayers, "%50[^,],%d\n",
                   players[cplayers].nombreplayer,
                   &players[cplayers].puntosdevida) == 2)      
     {
         cplayers++;
     }
+    
     fclose(txtplayers);
     int iplayers;
-    //imprime los players del archivo
-    /*printf("PLAYERS:\n");
-    for (iplayers = 1; iplayers < cplayers; iplayers++)
-    {
-        printf("Nombre player%d: %s \n",iplayers, players[iplayers].nombreplayer);
-        printf("Vida player%d: %d\n\n",iplayers, players[iplayers].puntosdevida);
-    }*/
     
-    
-    
+    //  MENU
+    int menuseleccion;
+    do {
+        printf("BIENVENIDO A EL JUEGO THE CLASH OF THE GUARDIANS\n\n");
+        printf("Para mostrar los jugadores, digite 1.\n");
+        printf("Para mostrar los guardianes, digite 2.\n");
+        printf("Para salir, digite 0.\n");
+        scanf("%d", &menuseleccion);
+        system("cls"); // Borra la pantalla en sistemas Windows, para sistemas Unix/Linux, usa "clear"
+
+        switch (menuseleccion) {
+            case 1:
+                // Imprime los players del archivo
+                printf("PLAYERS:\n");
+                for (iplayers = 0; iplayers < cplayers; iplayers++)
+                  {
+                     printf("Nombre player%d: %s \n",iplayers, players[iplayers].nombreplayer);
+                     printf("Vida player%d: %d\n\n",iplayers, players[iplayers].puntosdevida);
+                  }
+                system("pause");
+                system("cls");
+                break;
+            case 2:
+                // Imprime las cartas del archivo
+                for (i = 0; i < records; i++)
+                {
+                     printf("nombre: %s ", guardianes[i].nombreguardian);
+                     printf("tipo: %s ", guardianes[i].tipo);
+                     printf("PV: %d ", guardianes[i].pv);
+                     printf("PA: %d ", guardianes[i].pa);
+                     printf("PD: %d\n", guardianes[i].pd);
+                }
+                system("pause");
+                system("cls");
+                break;
+            case 0:
+                printf("¡Hasta luego!\n");
+                break;
+            default:
+                printf("Opcion invalida. Por favor, ingrese 1, 2 o 0.\n");
+                system("pause");
+                system("cls");
+        }
+    } while (menuseleccion != 0);
+
     system("pause");
     return 0;
 }
