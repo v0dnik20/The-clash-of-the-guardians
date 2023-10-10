@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
+#include <time.h>
 
 struct guardian
 {
@@ -8,12 +9,15 @@ struct guardian
     int pv;
     int pa;
     int pd;
+    int codigocarta;
+
 };
 
 struct player
 {
     char nombreplayer[50];
     int puntosdevida;
+    struct guardian cartas[15];
 };
 
 int main()
@@ -29,6 +33,7 @@ int main()
     }
     struct guardian guardianes[60];
     int records = 0;
+    int i=1;
     while (fscanf(txtguardian, "%50[^,],%50[^,],%d,%d,%d\n",
                   guardianes[records].nombreguardian,
                   guardianes[records].tipo,
@@ -36,21 +41,11 @@ int main()
                   &guardianes[records].pa,
                   &guardianes[records].pd) == 5)      
     {
+        guardianes[records].codigocarta=i;
         records++;
+        i++;
     }
     fclose(txtguardian);
-    int i;
-    //imprime las cartas del archivo
-    /*for (i = 0; i < records; i++)
-    {
-        printf("nombre: %s ", guardianes[i].nombreguardian);
-        printf("tipo: %s ", guardianes[i].tipo);
-        printf("PV: %d ", guardianes[i].pv);
-        printf("PA: %d ", guardianes[i].pa);
-        printf("PD: %d\n", guardianes[i].pd);
-
-    }*/ 
-    
     //jugadores (player y cpu)
     FILE*txtplayers;
     txtplayers = fopen("txtplayers.txt", "r");
@@ -70,23 +65,47 @@ int main()
     }
     
     fclose(txtplayers);
-    int iplayers;
+
+    //repartir las cartas
+    int j;
+    for (i=0;i<2;i++)
+    {
+        for (j=0;j<15;j++)
+        {
+            int randcarta;
+            do
+            {
+                randcarta = rand() % 60;
+            }
+            while(guardianes[randcarta].codigocarta <0);
+
+            // carta del player
+            players[i].cartas[j] = guardianes[randcarta];
+
+            // carta marcada para que no se repita
+            guardianes[randcarta].codigocarta = guardianes[randcarta].codigocarta*-1;
+        }
+    }
+    
+    
     
     //  MENU
+    int iplayers;
     int menuseleccion;
     do {
-        printf("BIENVENIDO A EL JUEGO THE CLASH OF THE GUARDIANS\n\n");
+        printf("BIENVENIDO AL MENU DE \n'THE CLASH OF THE GUARDIANS'\n\n");
         printf("Para mostrar los jugadores, digite 1.\n");
         printf("Para mostrar los guardianes, digite 2.\n");
+        printf("Para mostrar las cartas del player, digite 3.\n");
         printf("Para salir, digite 0.\n");
         scanf("%d", &menuseleccion);
-        system("cls"); // Borra la pantalla en sistemas Windows, para sistemas Unix/Linux, usa "clear"
+        system("cls");
 
         switch (menuseleccion) {
             case 1:
                 // Imprime los players del archivo
                 printf("PLAYERS:\n");
-                for (iplayers = 0; iplayers < cplayers; iplayers++)
+                for (iplayers = 1; iplayers <= cplayers; iplayers++)
                   {
                      printf("Nombre player%d: %s \n",iplayers, players[iplayers].nombreplayer);
                      printf("Vida player%d: %d\n\n",iplayers, players[iplayers].puntosdevida);
@@ -96,17 +115,39 @@ int main()
                 break;
             case 2:
                 // Imprime las cartas del archivo
-                for (i = 0; i < records; i++)
+                for (i = 1; i <= records; i++)
                 {
-                     printf("nombre: %s ", guardianes[i].nombreguardian);
-                     printf("tipo: %s ", guardianes[i].tipo);
-                     printf("PV: %d ", guardianes[i].pv);
-                     printf("PA: %d ", guardianes[i].pa);
-                     printf("PD: %d\n", guardianes[i].pd);
+                     printf("Codigo de la carta: %d \n",guardianes[i-1].codigocarta);
+                     printf("nombre: %s \n", guardianes[i-1].nombreguardian);
+                     printf("tipo: %s \n", guardianes[i-1].tipo);
+                     printf("PV: %d \n", guardianes[i-1].pv);
+                     printf("PA: %d \n", guardianes[i-1].pa);
+                     printf("PD: %d\n\n", guardianes[i-1].pd);
                 }
+                printf("TODAS LAS CARTAS EN LAS QUE SU NUMERO DE CARTA SE ESCUENTRE EN NEGATIVO SIGNIFICA QUE YA FUE ASIGNADA A UN JUGADOR, PERO EL NUMERO DE ESTA SIGUE SIENDO EL MISMO SOLO QUE EN NEGATIVO");
                 system("pause");
                 system("cls");
                 break;
+            case 3:
+                 //imprime las 15 cartas asignadas aleatoriamente a cada player
+                for (i = 0; i < 2; i++)
+                {
+                    printf("Cartas asignadas al jugador %s:\n\n", players[i].nombreplayer);
+                    for (j = 0; j < 15; j++)
+                    {
+                        printf("Carta %d: \n", j + 1);
+                        printf("Codigo de la carta: %d\n", players[i].cartas[j].codigocarta);
+                        printf("Nombre: %s\n", players[i].cartas[j].nombreguardian);
+                        printf("Tipo: %s\n", players[i].cartas[j].tipo);
+                        printf("PV: %d\n", players[i].cartas[j].pv);
+                        printf("PA: %d\n", players[i].cartas[j].pa);
+                        printf("PD: %d\n\n", players[i].cartas[j].pd);
+                    }
+                    printf("\n");
+                }
+                system("pause");
+                system("cls");
+                 break;
             case 0:
                 printf("¡Hasta luego!\n");
                 break;
