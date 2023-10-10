@@ -105,10 +105,10 @@ int main()
             case 1:
                 // Imprime los players del archivo
                 printf("PLAYERS:\n");
-                for (iplayers = 1; iplayers <= cplayers; iplayers++)
+                for (iplayers = 0; iplayers < cplayers; iplayers++)
                   {
-                     printf("Nombre player%d: %s \n",iplayers, players[iplayers].nombreplayer);
-                     printf("Vida player%d: %d\n\n",iplayers, players[iplayers].puntosdevida);
+                     printf("Nombre player%d: %s \n",iplayers+1, players[iplayers].nombreplayer);
+                     printf("Vida player%d: %d\n\n",iplayers+1, players[iplayers].puntosdevida);
                   }
                 system("pause");
                 system("cls");
