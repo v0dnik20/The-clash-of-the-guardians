@@ -18,7 +18,172 @@ struct player
     char nombreplayer[50];
     int puntosdevida;
     struct guardian cartas[15];
+    struct guardian cartasescogidas[3];
+    int turno;
+    struct guardian cartacampo;
+    int numcartasencampo;
+    
 };
+
+void seleccioncartas(struct player*jugador)
+{
+     printf("escoja 3 cartas para jugar: \n");
+     int cartaescogida;
+     int cartaselegidas=0;
+     int i;
+     while(cartaselegidas<3)
+     {
+      printf("tu mazo: \n");
+      for(i=0;i<15;i++)
+      {
+       printf("%d. Codigo de la carta: %d\nNombre: %s\nTipo: %s\nPV: %d\nPA: %d\nPD: %d\n\n", i + 1, jugador->cartas[i].codigocarta, jugador->cartas[i].nombreguardian, jugador->cartas[i].tipo, jugador->cartas[i].pv,jugador->cartas[i].pa,jugador->cartas[i].pd);
+      }
+      printf("Turno de %s\n", jugador->nombreplayer);
+      printf("\ningrese el numero de la carta que quiere escoger (1-15): \n");
+      scanf("%d", &cartaescogida);
+      if(cartaescogida>=1 && cartaescogida<=15)
+      {
+       jugador->cartasescogidas[cartaselegidas] = jugador->cartas[cartaescogida - 1];
+       cartaselegidas++;
+       printf("carta elegida con exito\n");
+       system("pause");
+       system("cls");
+      }
+      else
+      {
+      printf("\npor favor escoja un opcion valida\n");
+      system("pause");
+      system("cls");
+      }
+     }
+     jugador->turno= 1-jugador->turno; 
+     
+}
+
+
+void seleccioncpu(struct player* jugador)
+{
+     int cpuelegida[15]={0};
+     int i;
+     for(i=0;i<3;i++)
+     {
+      int cartarandom;
+      do
+      {
+          cartarandom=rand()%15;
+      }
+      while (cpuelegida[cartarandom] == 1);
+      jugador->cartasescogidas[i] = jugador->cartas[cartarandom];
+      cpuelegida[cartarandom] = 1;
+     }
+}
+
+
+void mostrariniciales(struct player* jugador)
+{
+     int i;
+     printf("Cartas del player %s:\n", jugador->nombreplayer);
+     for(i=0;i<3;i++)
+     {
+        printf("Carta %d:\n", i + 1);
+        printf("Codigo de la carta: %d\n",jugador->cartasescogidas[i].codigocarta);
+        printf("Nombre: %s\n", jugador->cartasescogidas[i].nombreguardian);
+        printf("Tipo: %s\n", jugador->cartasescogidas[i].tipo);
+        printf("PV: %d\n", jugador->cartasescogidas[i].pv);
+        printf("PA: %d\n", jugador->cartasescogidas[i].pa);
+        printf("PD: %d\n\n",jugador->cartasescogidas[i].pd);
+     }
+}
+void cartacampoplayer(struct player*jugador)
+{
+     int opcion;
+     printf("Seleccione una carta para ponerla en el campo de batalla (1-3): ");
+     scanf("%d", &opcion);
+     if (opcion >= 1 && opcion <= 3)
+     {
+        jugador->cartacampo = jugador->cartasescogidas[opcion - 1];
+        printf("\nNombre: %s\n", jugador->cartacampo.nombreguardian);
+        printf("Tipo: %s\n", jugador->cartacampo.tipo);
+        printf("PV: %d\n", jugador->cartacampo.pv);
+        printf("PA: %d\n", jugador->cartacampo.pa);
+        printf("PD: %d\n", jugador->cartacampo.pd);
+        printf("***colocada en el campo de batalla***\n");
+     }
+     else
+     {
+        printf("Opcion no válida. La carta no se colocará en el campo de batalla.\n");
+     }
+}
+void cartacampocpu(struct player*jugador)
+{
+     int opcion = rand() % 3; // Genera un número aleatorio entre 0 y 2 para seleccionar una carta aleatoria
+     printf("Carta aleatoria seleccionada para el campo de batalla:\n");
+     printf("Nombre: %s\n", jugador->cartasescogidas[opcion].nombreguardian);
+     printf("Tipo: %s\n", jugador->cartasescogidas[opcion].tipo);
+     printf("PV: %d\n", jugador->cartasescogidas[opcion].pv);
+     printf("PA: %d\n", jugador->cartasescogidas[opcion].pa);
+     printf("PD: %d\n", jugador->cartasescogidas[opcion].pd);
+     jugador->cartacampo = jugador->cartasescogidas[opcion];
+     printf("***colocada en el campo de batalla***\n");
+}
+
+void mostrarCartasEnCampo(struct player* jugador1, struct player* jugador2)
+{
+    printf("Cartas en el campo de batalla:\n\n");
+
+    printf("Cartas de: %s\n", jugador1->nombreplayer);
+    printf("Nombre: %s\n", jugador1->cartacampo.nombreguardian);
+    printf("Tipo: %s\n", jugador1->cartacampo.tipo);
+    printf("PV: %d\n", jugador1->cartacampo.pv);
+    printf("PA: %d\n", jugador1->cartacampo.pa);
+    printf("PD: %d\n", jugador1->cartacampo.pd);
+    printf("\n");
+
+    printf("Cartas de: %s\n", jugador2->nombreplayer);
+    printf("Nombre: %s\n", jugador2->cartacampo.nombreguardian);
+    printf("Tipo: %s\n", jugador2->cartacampo.tipo);
+    printf("PV: %d\n", jugador2->cartacampo.pv);
+    printf("PA: %d\n", jugador2->cartacampo.pa);
+    printf("PD: %d\n", jugador2->cartacampo.pd);
+    printf("\n");
+}
+
+void accionjuego(struct player* jugador)
+{
+    int opcion;
+    printf("Turno de %s\n", jugador->nombreplayer);
+    printf("Seleccione una opcion:\n");
+    printf("1. Poner otra carta en el campo\n");
+    printf("2. Atacar con una carta en el campo\n");
+    printf("3. Tomar carta del mazo\n");
+    printf("4. Terminar el turno\n");
+    scanf("%d", &opcion);
+    
+    switch (opcion)
+    {
+        case 1:
+            //codigo de poner otra carta en el campo
+            if(jugador->numcartasencampo<3)
+            {
+                cartacampoplayer(&jugador[0]);
+            }
+            break;
+        case 2:
+            //codigo de ataque
+            break;
+        case 3:
+            //codigo para tomar carta del mazo
+            break;
+        case 4:
+            // Terminar el turno
+            jugador->turno = 1 - jugador->turno;
+            break;
+        default:
+            printf("Opción no válida. Por favor, seleccione una opción válida.\n");
+            break;
+    }
+        
+}
 
 int main()
 {
@@ -66,6 +231,10 @@ int main()
     
     fclose(txtplayers);
 
+    //sistema de turnos
+    players[0].turno=0;
+    players[1].turno=1;
+
     //repartir las cartas
     int j;
     for (i=0;i<2;i++)
@@ -97,6 +266,7 @@ int main()
         printf("Para mostrar los jugadores, digite 1.\n");
         printf("Para mostrar los guardianes, digite 2.\n");
         printf("Para mostrar las cartas del player, digite 3.\n");
+        printf("Para iniciar el juego, digite 4.\n");
         printf("Para salir, digite 0.\n");
         scanf("%d", &menuseleccion);
         system("cls");
@@ -148,6 +318,56 @@ int main()
                 system("pause");
                 system("cls");
                  break;
+            case 4://juego
+                seleccioncartas(&players[0]);
+                mostrariniciales(&players[0]);
+                cartacampoplayer(&players[0]);
+                system("pause");
+                system("cls");
+                
+                printf("TURNO DEL PLAYER2\n");
+                seleccioncpu(&players[1]);
+                mostrariniciales(&players[1]);
+                cartacampocpu(&players[1]);
+                system("pause");
+                system("cls");
+                
+                mostrarCartasEnCampo(&players[0], &players[1]);
+                
+                while(1)
+                {
+                        accionjuego(&players[0]);
+                        //permite al player 1 hacer alguna accion
+                        
+                        mostrarCartasEnCampo(&players[0], &players[1]);
+                        //esto es para mostrar e estado de la partida
+                        //despues de la accion del player 1
+                        
+                        //aqui debe estar la logica para que la IA pueda tomar deciciones
+                        
+                        accionjuego(&players[1]);
+                        //permite al player 2 hacer alguna accion
+                        
+                        mostrarCartasEnCampo(&players[0], &players[1]);
+                        //lo mismo que al comienzo, es para mostrar el estado de la
+                        //partida despues de la accion del player 2
+                        
+                        if(players[0].turno == 0 && players[1].turno == 0)
+                        {
+                           break;
+                        }
+                        
+                        players[0].turno = 0;
+                        players[1].turno = 1;
+                        //reiniciar los turnos
+      
+                }
+
+                printf("\n"); 
+                system("pause");
+                system("cls");
+                break;
+                
             case 0:
                 printf("¡Hasta luego!\n");
                 break;
